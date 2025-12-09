@@ -1,0 +1,44 @@
+global:
+  scrape_interval: 30s
+
+alertmanager:
+  enabled: false
+
+grafana:
+  enabled: false
+
+prometheusOperator:
+  enabled: true
+
+prometheus:
+  service:
+    type: ClusterIP
+  prometheusSpec:
+    scrapeInterval: 30s
+    evaluationInterval: 30s
+    replicas: 1
+    enableAdminAPI: false
+    remoteWrite:
+      - url: "https://prometheus-receiver.obs.fitsync.online/api/v1/receive"
+        name: "obs-remote"
+        basicAuth:
+          username:
+            name: prom-remote-write
+            key: username
+          password:
+            name: prom-remote-write
+            key: password
+        tlsConfig:
+          insecureSkipVerify: false
+    externalLabels:
+      cluster: "app"
+    podMonitorSelectorNilUsesHelmValues: false
+    serviceMonitorSelectorNilUsesHelmValues: false
+    ruleSelectorNilUsesHelmValues: false
+
+kube-state-metrics:
+  enabled: true
+
+nodeExporter:
+  enabled: true
+
