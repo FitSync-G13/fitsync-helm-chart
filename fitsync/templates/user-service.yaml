@@ -1,0 +1,58 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.services.userService.name }}
+  labels:
+    app: {{ .Values.services.userService.name }}
+    version: v1
+spec:
+  replicas: {{ .Values.services.userService.replicas }}
+  selector:
+    matchLabels:
+      app: {{ .Values.services.userService.name }}
+      version: v1
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.services.userService.name }}
+        version: v1
+    spec:
+      containers:
+      - name: {{ .Values.services.userService.name }}
+        image: "{{ .Values.global.imageRegistry }}/fitsync-{{ .Values.services.userService.name }}:{{ .Values.global.imageTag }}"
+        imagePullPolicy: {{ .Values.global.imagePullPolicy }}
+        ports:
+        - containerPort: {{ .Values.services.userService.port }}
+        env:
+        - name: NODE_ENV
+          value: "production"
+        - name: PORT
+          value: "{{ .Values.services.userService.port }}"
+        - name: DATABASE_URL
+          value: "{{ .Values.env.USER_DATABASE_URL }}"
+        - name: REDIS_URL
+          value: "{{ .Values.env.REDIS_URL }}"
+        - name: JWT_SECRET
+          value: "{{ .Values.env.JWT_SECRET }}"
+        - name: JWT_REFRESH_SECRET
+          value: "{{ .Values.env.JWT_REFRESH_SECRET }}"
+        - name: JWT_EXPIRY
+          value: "{{ .Values.env.JWT_EXPIRY }}"
+        - name: JWT_REFRESH_EXPIRY
+          value: "{{ .Values.env.JWT_REFRESH_EXPIRY }}"
+        resources:
+          {{- toYaml .Values.services.userService.resources | nindent 10 }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.services.userService.name }}
+  labels:
+    app: {{ .Values.services.userService.name }}
+    service: {{ .Values.services.userService.name }}
+spec:
+  ports:
+  - port: {{ .Values.services.userService.port }}
+    name: http
+  selector:
+    app: {{ .Values.services.userService.name }}

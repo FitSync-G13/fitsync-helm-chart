@@ -1,0 +1,11 @@
+# Test values file with real secrets - DO NOT COMMIT
+values-test.yaml
+
+# Local values files with secrets
+values-*-local.yaml
+values-*-secrets.yaml
+
+# Helm generated files
+*.tgz
+charts/
+Chart.lock

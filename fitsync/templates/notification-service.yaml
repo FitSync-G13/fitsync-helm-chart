@@ -1,0 +1,58 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.services.notificationService.name }}
+  labels:
+    app: {{ .Values.services.notificationService.name }}
+    version: v1
+spec:
+  replicas: {{ .Values.services.notificationService.replicas }}
+  selector:
+    matchLabels:
+      app: {{ .Values.services.notificationService.name }}
+      version: v1
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.services.notificationService.name }}
+        version: v1
+    spec:
+      containers:
+      - name: {{ .Values.services.notificationService.name }}
+        image: "{{ .Values.global.imageRegistry }}/fitsync-{{ .Values.services.notificationService.name }}:{{ .Values.global.imageTag }}"
+        imagePullPolicy: {{ .Values.global.imagePullPolicy }}
+        ports:
+        - containerPort: {{ .Values.services.notificationService.port }}
+        env:
+        - name: NODE_ENV
+          value: "production"
+        - name: PORT
+          value: "{{ .Values.services.notificationService.port }}"
+        - name: REDIS_URL
+          value: "{{ .Values.env.REDIS_URL }}"
+        - name: USER_SERVICE_URL
+          value: "http://{{ .Values.services.userService.name }}:{{ .Values.services.userService.port }}"
+        - name: SMTP_HOST
+          value: "{{ .Values.env.SMTP_HOST }}"
+        - name: SMTP_PORT
+          value: "{{ .Values.env.SMTP_PORT }}"
+        - name: SMTP_USER
+          value: "{{ .Values.env.SMTP_USER }}"
+        - name: SMTP_PASSWORD
+          value: "{{ .Values.env.SMTP_PASSWORD }}"
+        resources:
+          {{- toYaml .Values.services.notificationService.resources | nindent 10 }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.services.notificationService.name }}
+  labels:
+    app: {{ .Values.services.notificationService.name }}
+    service: {{ .Values.services.notificationService.name }}
+spec:
+  ports:
+  - port: {{ .Values.services.notificationService.port }}
+    name: http
+  selector:
+    app: {{ .Values.services.notificationService.name }}

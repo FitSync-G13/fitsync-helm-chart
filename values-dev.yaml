@@ -1,0 +1,106 @@
+# Development environment values
+# Copy this file and customize for your environment
+
+global:
+  imageRegistry: "YOUR_ECR_REGISTRY_URL"  # Replace with actual ECR URL
+  imageTag: "latest"
+  imagePullPolicy: Always
+
+env:
+  # JWT Configuration
+  JWT_SECRET: "dev-jwt-secret-change-me"
+  JWT_REFRESH_SECRET: "dev-refresh-secret-change-me"
+  JWT_EXPIRY: "15m"
+  JWT_REFRESH_EXPIRY: "7d"
+  
+  # Database URLs - Replace with your actual database URLs
+  USER_DATABASE_URL: "postgresql://user:pass@host:port/userdb?sslmode=require"
+  TRAINING_DATABASE_URL: "postgresql://user:pass@host:port/trainingdb?sslmode=require"
+  SCHEDULE_DATABASE_URL: "postgresql://user:pass@host:port/scheduledb?sslmode=require"
+  PROGRESS_DATABASE_URL: "postgresql://user:pass@host:port/progressdb?sslmode=require"
+  
+  # Redis Configuration - Replace with your Redis URL
+  REDIS_URL: "rediss://your-redis-host.com:6379"
+  
+  # SMTP Configuration (for notification service)
+  SMTP_HOST: "smtp.gmail.com"
+  SMTP_PORT: "587"
+  SMTP_USER: "noreply@fitsync.com"
+  SMTP_PASSWORD: "your-smtp-password"
+  
+  # Rate Limiting
+  RATE_LIMIT_WINDOW_MS: "900000"
+  RATE_LIMIT_MAX_REQUESTS: "100"
+
+# Istio configuration for development
+istio:
+  gateway:
+    name: "development-gateway"
+    namespace: "istio-system"
+  
+  virtualService:
+    name: "fitsync-api"
+    hosts:
+      - "*"
+
+# Development resource limits (smaller)
+services:
+  userService:
+    replicas: 1
+    resources:
+      requests:
+        memory: "128Mi"
+        cpu: "100m"
+      limits:
+        memory: "256Mi"
+        cpu: "250m"
+  
+  trainingService:
+    replicas: 1
+    resources:
+      requests:
+        memory: "128Mi"
+        cpu: "100m"
+      limits:
+        memory: "256Mi"
+        cpu: "250m"
+  
+  scheduleService:
+    replicas: 1
+    resources:
+      requests:
+        memory: "128Mi"
+        cpu: "100m"
+      limits:
+        memory: "256Mi"
+        cpu: "250m"
+  
+  progressService:
+    replicas: 1
+    resources:
+      requests:
+        memory: "128Mi"
+        cpu: "100m"
+      limits:
+        memory: "256Mi"
+        cpu: "250m"
+  
+  notificationService:
+    replicas: 1
+    resources:
+      requests:
+        memory: "128Mi"
+        cpu: "100m"
+      limits:
+        memory: "256Mi"
+        cpu: "250m"
+  
+  apiGateway:
+    replicas: 1
+    resources:
+      requests:
+        memory: "128Mi"
+        cpu: "100m"
+      limits:
+        memory: "256Mi"
+        cpu: "250m"

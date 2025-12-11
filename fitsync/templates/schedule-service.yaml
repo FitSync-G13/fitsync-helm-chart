@@ -1,0 +1,54 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.services.scheduleService.name }}
+  labels:
+    app: {{ .Values.services.scheduleService.name }}
+    version: v1
+spec:
+  replicas: {{ .Values.services.scheduleService.replicas }}
+  selector:
+    matchLabels:
+      app: {{ .Values.services.scheduleService.name }}
+      version: v1
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.services.scheduleService.name }}
+        version: v1
+    spec:
+      containers:
+      - name: {{ .Values.services.scheduleService.name }}
+        image: "{{ .Values.global.imageRegistry }}/fitsync-{{ .Values.services.scheduleService.name }}:{{ .Values.global.imageTag }}"
+        imagePullPolicy: {{ .Values.global.imagePullPolicy }}
+        ports:
+        - containerPort: {{ .Values.services.scheduleService.port }}
+        env:
+        - name: ENVIRONMENT
+          value: "production"
+        - name: PORT
+          value: "{{ .Values.services.scheduleService.port }}"
+        - name: DATABASE_URL
+          value: "{{ .Values.env.SCHEDULE_DATABASE_URL }}"
+        - name: REDIS_URL
+          value: "{{ .Values.env.REDIS_URL }}"
+        - name: JWT_SECRET
+          value: "{{ .Values.env.JWT_SECRET }}"
+        - name: USER_SERVICE_URL
+          value: "http://{{ .Values.services.userService.name }}:{{ .Values.services.userService.port }}"
+        resources:
+          {{- toYaml .Values.services.scheduleService.resources | nindent 10 }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.services.scheduleService.name }}
+  labels:
+    app: {{ .Values.services.scheduleService.name }}
+    service: {{ .Values.services.scheduleService.name }}
+spec:
+  ports:
+  - port: {{ .Values.services.scheduleService.port }}
+    name: http
+  selector:
+    app: {{ .Values.services.scheduleService.name }}

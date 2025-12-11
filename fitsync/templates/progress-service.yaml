@@ -1,0 +1,54 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.services.progressService.name }}
+  labels:
+    app: {{ .Values.services.progressService.name }}
+    version: v1
+spec:
+  replicas: {{ .Values.services.progressService.replicas }}
+  selector:
+    matchLabels:
+      app: {{ .Values.services.progressService.name }}
+      version: v1
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.services.progressService.name }}
+        version: v1
+    spec:
+      containers:
+      - name: {{ .Values.services.progressService.name }}
+        image: "{{ .Values.global.imageRegistry }}/fitsync-{{ .Values.services.progressService.name }}:{{ .Values.global.imageTag }}"
+        imagePullPolicy: {{ .Values.global.imagePullPolicy }}
+        ports:
+        - containerPort: {{ .Values.services.progressService.port }}
+        env:
+        - name: ENVIRONMENT
+          value: "production"
+        - name: PORT
+          value: "{{ .Values.services.progressService.port }}"
+        - name: DATABASE_URL
+          value: "{{ .Values.env.PROGRESS_DATABASE_URL }}"
+        - name: REDIS_URL
+          value: "{{ .Values.env.REDIS_URL }}"
+        - name: JWT_SECRET
+          value: "{{ .Values.env.JWT_SECRET }}"
+        - name: USER_SERVICE_URL
+          value: "http://{{ .Values.services.userService.name }}:{{ .Values.services.userService.port }}"
+        resources:
+          {{- toYaml .Values.services.progressService.resources | nindent 10 }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.services.progressService.name }}
+  labels:
+    app: {{ .Values.services.progressService.name }}
+    service: {{ .Values.services.progressService.name }}
+spec:
+  ports:
+  - port: {{ .Values.services.progressService.port }}
+    name: http
+  selector:
+    app: {{ .Values.services.progressService.name }}

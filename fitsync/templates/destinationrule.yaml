@@ -1,0 +1,12 @@
+{{- range $service := list "userService" "trainingService" "scheduleService" "progressService" "notificationService" "apiGateway" }}
+---
+apiVersion: networking.istio.io/v1beta1
+kind: DestinationRule
+metadata:
+  name: {{ index $.Values.services $service "name" }}
+spec:
+  host: {{ index $.Values.services $service "name" }}
+  trafficPolicy:
+    tls:
+      mode: ISTIO_MUTUAL
+{{- end }}

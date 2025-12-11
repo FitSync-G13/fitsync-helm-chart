@@ -1,0 +1,122 @@
+# Global configuration
+global:
+  imageRegistry: "YOUR_ECR_REGISTRY_URL"
+  imageTag: "latest"
+  imagePullPolicy: Always
+
+# Environment variables
+env:
+  # JWT Configuration
+  JWT_SECRET: "your-super-secret-jwt-key-change-in-production"
+  JWT_REFRESH_SECRET: "your-super-secret-refresh-key-change-in-production"
+  JWT_EXPIRY: "15m"
+  JWT_REFRESH_EXPIRY: "7d"
+  
+  # Database URLs (to be provided)
+  USER_DATABASE_URL: ""
+  TRAINING_DATABASE_URL: ""
+  SCHEDULE_DATABASE_URL: ""
+  PROGRESS_DATABASE_URL: ""
+  
+  # Redis Configuration
+  REDIS_URL: ""
+  
+  # SMTP Configuration (for notification service)
+  SMTP_HOST: "smtp.gmail.com"
+  SMTP_PORT: "587"
+  SMTP_USER: "noreply@fitsync.com"
+  SMTP_PASSWORD: ""
+  
+  # Rate Limiting
+  RATE_LIMIT_WINDOW_MS: "900000"
+  RATE_LIMIT_MAX_REQUESTS: "100"
+
+# Service configurations
+services:
+  userService:
+    name: user-service
+    port: 3001
+    replicas: 1
+    resources:
+      requests:
+        memory: "256Mi"
+        cpu: "250m"
+      limits:
+        memory: "512Mi"
+        cpu: "500m"
+  
+  trainingService:
+    name: training-service
+    port: 3002
+    replicas: 1
+    resources:
+      requests:
+        memory: "256Mi"
+        cpu: "250m"
+      limits:
+        memory: "512Mi"
+        cpu: "500m"
+  
+  scheduleService:
+    name: schedule-service
+    port: 8003
+    replicas: 1
+    resources:
+      requests:
+        memory: "256Mi"
+        cpu: "250m"
+      limits:
+        memory: "512Mi"
+        cpu: "500m"
+  
+  progressService:
+    name: progress-service
+    port: 8004
+    replicas: 1
+    resources:
+      requests:
+        memory: "256Mi"
+        cpu: "250m"
+      limits:
+        memory: "512Mi"
+        cpu: "500m"
+  
+  notificationService:
+    name: notification-service
+    port: 3005
+    replicas: 1
+    resources:
+      requests:
+        memory: "256Mi"
+        cpu: "250m"
+      limits:
+        memory: "512Mi"
+        cpu: "500m"
+  
+  apiGateway:
+    name: api-gateway
+    port: 4000
+    replicas: 1
+    resources:
+      requests:
+        memory: "256Mi"
+        cpu: "250m"
+      limits:
+        memory: "512Mi"
+        cpu: "500m"
+
+# Istio configuration
+istio:
+  gateway:
+    name: "development-gateway"  # Should match your environment gateway
+    namespace: "istio-system"
+  
+  virtualService:
+    name: "fitsync-api"
+    hosts:
+      - "*"
+    
+# mTLS configuration
+security:
+  mtls:
+    mode: STRICT

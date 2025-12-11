@@ -1,0 +1,54 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.services.trainingService.name }}
+  labels:
+    app: {{ .Values.services.trainingService.name }}
+    version: v1
+spec:
+  replicas: {{ .Values.services.trainingService.replicas }}
+  selector:
+    matchLabels:
+      app: {{ .Values.services.trainingService.name }}
+      version: v1
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.services.trainingService.name }}
+        version: v1
+    spec:
+      containers:
+      - name: {{ .Values.services.trainingService.name }}
+        image: "{{ .Values.global.imageRegistry }}/fitsync-{{ .Values.services.trainingService.name }}:{{ .Values.global.imageTag }}"
+        imagePullPolicy: {{ .Values.global.imagePullPolicy }}
+        ports:
+        - containerPort: {{ .Values.services.trainingService.port }}
+        env:
+        - name: NODE_ENV
+          value: "production"
+        - name: PORT
+          value: "{{ .Values.services.trainingService.port }}"
+        - name: DATABASE_URL
+          value: "{{ .Values.env.TRAINING_DATABASE_URL }}"
+        - name: REDIS_URL
+          value: "{{ .Values.env.REDIS_URL }}"
+        - name: USER_SERVICE_URL
+          value: "http://{{ .Values.services.userService.name }}:{{ .Values.services.userService.port }}"
+        - name: JWT_SECRET
+          value: "{{ .Values.env.JWT_SECRET }}"
+        resources:
+          {{- toYaml .Values.services.trainingService.resources | nindent 10 }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.services.trainingService.name }}
+  labels:
+    app: {{ .Values.services.trainingService.name }}
+    service: {{ .Values.services.trainingService.name }}
+spec:
+  ports:
+  - port: {{ .Values.services.trainingService.port }}
+    name: http
+  selector:
+    app: {{ .Values.services.trainingService.name }}
