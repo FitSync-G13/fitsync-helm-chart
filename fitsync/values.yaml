@@ -89,7 +89,7 @@ services:
 # Istio configuration
 istio:
   gateway:
-    name: "development-gateway"  # Should match your environment gateway
+    name: "{{ .Values.global.environment }}-gateway"  # Dynamic based on environment
     namespace: "istio-system"
   
   virtualService:
