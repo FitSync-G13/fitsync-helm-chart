@@ -5,30 +5,10 @@ global:
   imagePullPolicy: Always
   environment: "production"
 
-# Environment variables
+# Global environment variables (only for shared values)
 env:
-  # JWT Configuration
-  JWT_SECRET: "your-super-secret-jwt-key-change-in-production"
-  JWT_REFRESH_SECRET: "your-super-secret-refresh-key-change-in-production"
   JWT_EXPIRY: "15m"
   JWT_REFRESH_EXPIRY: "7d"
-  
-  # Database URLs (to be provided)
-  USER_DATABASE_URL: ""
-  TRAINING_DATABASE_URL: ""
-  SCHEDULE_DATABASE_URL: ""
-  PROGRESS_DATABASE_URL: ""
-  
-  # Redis Configuration
-  REDIS_URL: ""
-  
-  # SMTP Configuration (for notification service)
-  SMTP_HOST: "smtp.gmail.com"
-  SMTP_PORT: "587"
-  SMTP_USER: "noreply@fitsync.com"
-  SMTP_PASSWORD: ""
-  
-  # Rate Limiting
   RATE_LIMIT_WINDOW_MS: "900000"
   RATE_LIMIT_MAX_REQUESTS: "100"
 
