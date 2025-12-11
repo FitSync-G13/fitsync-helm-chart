@@ -1,0 +1,63 @@
+singleNode: true
+clusterName: obs-opensearch
+
+replicas: 1
+persistence:
+  enabled: false
+
+extraEnvs:
+  - name: DISABLE_INSTALL_DEMO_CONFIG
+    value: "true"
+  - name: DISABLE_SECURITY_PLUGIN
+    value: "false"
+
+securityConfig:
+  enabled: true
+  adminPassword: "changeme-strong"
+
+service:
+  # Keep this service internal; expose via TLS ingress below.
+  type: ClusterIP
+
+ingress:
+  enabled: true
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/backend-protocol: HTTP
+  hosts:
+    - host: "opensearch-api.obs.fitsync.online"
+      paths:
+        - path: /
+          pathType: Prefix
+  tls:
+    - hosts:
+        - "opensearch-api.obs.fitsync.online"
+      secretName: opensearch-api-tls
+
+dashboards:
+  enabled: true
+  replicaCount: 1
+  service:
+    type: ClusterIP
+  ingress:
+    enabled: true
+    annotations:
+      kubernetes.io/ingress.class: nginx
+    hosts:
+      - host: "osd.obs.fitsync.online"
+        paths:
+          - path: /
+            pathType: Prefix
+    tls:
+      - hosts:
+          - "osd.obs.fitsync.online"
+        secretName: opensearch-dashboards-tls
+  opensearchDashboardsConfig:
+    opensearchDashboards.yml: |
+      server.host: "0.0.0.0"
+      opensearch.hosts: ["https://opensearch-cluster-master:9200"]
+      opensearch.ssl.verificationMode: full
+      server.ssl.enabled: true
+      server.ssl.certificate: /usr/share/opensearch-dashboards/config/tls/tls.crt
+      server.ssl.key: /usr/share/opensearch-dashboards/config/tls/tls.key
+

@@ -1,0 +1,59 @@
+global:
+  scrape_interval: 30s
+
+alertmanager:
+  enabled: false
+
+grafana:
+  enabled: true
+  adminPassword: "changeme-strong"
+  ingress:
+    enabled: true
+    annotations:
+      kubernetes.io/ingress.class: nginx
+    hosts:
+      - "grafana.obs.fitsync.online"
+    tls:
+      - secretName: grafana-tls
+        hosts:
+          - "grafana.obs.fitsync.online"
+
+prometheusOperator:
+  enabled: true
+
+prometheus:
+  ingress:
+    enabled: true
+    annotations:
+      kubernetes.io/ingress.class: nginx
+    hosts:
+      - "prometheus.obs.fitsync.online"
+    tls:
+      - secretName: prometheus-tls
+        hosts:
+          - "prometheus.obs.fitsync.online"
+  service:
+    type: LoadBalancer
+    annotations:
+      service.beta.kubernetes.io/aws-load-balancer-scheme: internet-facing
+      service.beta.kubernetes.io/aws-load-balancer-type: "nlb"
+      service.beta.kubernetes.io/aws-load-balancer-attributes: idle_timeout.timeout_seconds=120
+  prometheusSpec:
+    enableRemoteWriteReceiver: true
+    retention: 15d
+    resources:
+      requests:
+        cpu: 500m
+        memory: 2Gi
+    storageSpec: {}
+    podMonitorSelectorNilUsesHelmValues: false
+    serviceMonitorSelectorNilUsesHelmValues: false
+    ruleSelectorNilUsesHelmValues: false
+    additionalScrapeConfigs: []
+
+kube-state-metrics:
+  enabled: true
+
+nodeExporter:
+  enabled: true
+
