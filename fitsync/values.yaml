@@ -1,8 +1,9 @@
 # Global configuration
 global:
-  imageRegistry: "YOUR_ECR_REGISTRY_URL"
+  imageRegistry: "074094370475.dkr.ecr.us-east-2.amazonaws.com"
   imageTag: "latest"
   imagePullPolicy: Always
+  environment: "production"
 
 # Environment variables
 env:

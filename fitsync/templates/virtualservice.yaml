@@ -5,7 +5,7 @@ metadata:
 spec:
   hosts:
   {{- range .Values.istio.virtualService.hosts }}
-  - {{ . }}
+  - {{ . | quote }}
   {{- end }}
   gateways:
   - {{ .Values.istio.gateway.namespace }}/{{ .Values.istio.gateway.name }}
