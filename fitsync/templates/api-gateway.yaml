@@ -39,9 +39,9 @@ spec:
         - name: NOTIFICATION_SERVICE_URL
           value: "http://{{ .Values.services.notificationService.name }}:{{ .Values.services.notificationService.port }}"
         - name: JWT_SECRET
-          value: "{{ .Values.env.JWT_SECRET }}"
+          value: "{{ .Values.apiGateway.env.JWT_SECRET }}"
         - name: REDIS_URL
-          value: "{{ .Values.env.REDIS_URL }}"
+          value: "{{ .Values.apiGateway.env.REDIS_URL }}"
         - name: RATE_LIMIT_WINDOW_MS
           value: "{{ .Values.env.RATE_LIMIT_WINDOW_MS }}"
         - name: RATE_LIMIT_MAX_REQUESTS

@@ -29,11 +29,11 @@ spec:
         - name: PORT
           value: "{{ .Values.services.progressService.port }}"
         - name: DATABASE_URL
-          value: "{{ .Values.env.PROGRESS_DATABASE_URL }}"
+          value: "{{ .Values.progressService.env.DATABASE_URL }}"
         - name: REDIS_URL
-          value: "{{ .Values.env.REDIS_URL }}"
+          value: "{{ .Values.progressService.env.REDIS_URL }}"
         - name: JWT_SECRET
-          value: "{{ .Values.env.JWT_SECRET }}"
+          value: "{{ .Values.progressService.env.JWT_SECRET }}"
         - name: USER_SERVICE_URL
           value: "http://{{ .Values.services.userService.name }}:{{ .Values.services.userService.port }}"
         resources:

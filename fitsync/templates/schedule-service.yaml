@@ -29,11 +29,11 @@ spec:
         - name: PORT
           value: "{{ .Values.services.scheduleService.port }}"
         - name: DATABASE_URL
-          value: "{{ .Values.env.SCHEDULE_DATABASE_URL }}"
+          value: "{{ .Values.scheduleService.env.DATABASE_URL }}"
         - name: REDIS_URL
-          value: "{{ .Values.env.REDIS_URL }}"
+          value: "{{ .Values.scheduleService.env.REDIS_URL }}"
         - name: JWT_SECRET
-          value: "{{ .Values.env.JWT_SECRET }}"
+          value: "{{ .Values.scheduleService.env.JWT_SECRET }}"
         - name: USER_SERVICE_URL
           value: "http://{{ .Values.services.userService.name }}:{{ .Values.services.userService.port }}"
         resources:

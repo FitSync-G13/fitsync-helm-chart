@@ -29,13 +29,13 @@ spec:
         - name: PORT
           value: "{{ .Values.services.trainingService.port }}"
         - name: DATABASE_URL
-          value: "{{ .Values.env.TRAINING_DATABASE_URL }}"
+          value: "{{ .Values.trainingService.env.DATABASE_URL }}"
         - name: REDIS_URL
-          value: "{{ .Values.env.REDIS_URL }}"
+          value: "{{ .Values.trainingService.env.REDIS_URL }}"
         - name: USER_SERVICE_URL
           value: "http://{{ .Values.services.userService.name }}:{{ .Values.services.userService.port }}"
         - name: JWT_SECRET
-          value: "{{ .Values.env.JWT_SECRET }}"
+          value: "{{ .Values.trainingService.env.JWT_SECRET }}"
         resources:
           {{- toYaml .Values.services.trainingService.resources | nindent 10 }}
 ---

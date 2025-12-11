@@ -29,13 +29,13 @@ spec:
         - name: PORT
           value: "{{ .Values.services.userService.port }}"
         - name: DATABASE_URL
-          value: "{{ .Values.env.USER_DATABASE_URL }}"
+          value: "{{ .Values.userService.env.DATABASE_URL }}"
         - name: REDIS_URL
-          value: "{{ .Values.env.REDIS_URL }}"
+          value: "{{ .Values.userService.env.REDIS_URL }}"
         - name: JWT_SECRET
-          value: "{{ .Values.env.JWT_SECRET }}"
+          value: "{{ .Values.userService.env.JWT_SECRET }}"
         - name: JWT_REFRESH_SECRET
-          value: "{{ .Values.env.JWT_REFRESH_SECRET }}"
+          value: "{{ .Values.userService.env.JWT_REFRESH_SECRET }}"
         - name: JWT_EXPIRY
           value: "{{ .Values.env.JWT_EXPIRY }}"
         - name: JWT_REFRESH_EXPIRY
