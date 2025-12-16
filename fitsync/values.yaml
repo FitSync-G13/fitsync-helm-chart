@@ -101,3 +101,22 @@ istio:
 security:
   mtls:
     mode: STRICT
+
+# OpenSearch logging configuration
+logging:
+  enabled: false  # Will be overridden by pipeline
+  opensearch:
+    endpoint: "opensearch2.dev-api.fitsync.online"
+    port: 9200
+    protocol: "https"
+    tls_verify: true
+    index: "fitsync-logs"
+  fluentbit:
+    image: "fluent/fluent-bit:2.2.0"
+    resources:
+      requests:
+        memory: "64Mi"
+        cpu: "50m"
+      limits:
+        memory: "128Mi"
+        cpu: "100m"

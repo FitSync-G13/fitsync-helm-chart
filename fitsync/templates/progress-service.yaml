@@ -5,6 +5,7 @@ metadata:
   labels:
     app: {{ .Values.services.progressService.name }}
     version: v1
+    logging: enabled
 spec:
   replicas: {{ .Values.services.progressService.replicas }}
   selector:
@@ -16,6 +17,7 @@ spec:
       labels:
         app: {{ .Values.services.progressService.name }}
         version: v1
+        logging: enabled
     spec:
       containers:
       - name: {{ .Values.services.progressService.name }}
