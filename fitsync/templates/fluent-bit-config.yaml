@@ -17,7 +17,7 @@ data:
 
     [INPUT]
         Name              tail
-        Path              /var/log/containers/*.log
+        Path              /var/log/containers/{{ .Values.logging.serviceName }}-*_default_{{ .Values.logging.serviceName }}-*.log
         multiline.parser  docker, cri
         Tag               kube.*
         Mem_Buf_Limit     50MB
@@ -37,11 +37,6 @@ data:
         Annotations         Off
         Labels              On
 
-    [FILTER]
-        Name    grep
-        Match   kube.*
-        Regex   kubernetes.labels.app (user-service|training-service|schedule-service|progress-service|notification-service|api-gateway)
-
     [OUTPUT]
         Name            opensearch
         Match           *
@@ -49,8 +44,9 @@ data:
         Port            {{ .Values.logging.opensearch.port }}
         Index           {{ .Values.logging.opensearch.index }}
         Type            _doc
-        HTTP_User       
-        HTTP_Passwd     
+        Generate_ID     On
+        Replace_Dots    On
+        Logstash_Format Off
         tls             On
         tls.verify      {{ .Values.logging.opensearch.tls_verify }}
         Suppress_Type_Name On
@@ -62,10 +58,4 @@ data:
         Time_Key    time
         Time_Format %Y-%m-%dT%H:%M:%S.%L
         Time_Keep   On
-
-    [PARSER]
-        Name    json
-        Format  json
-        Time_Key time
-        Time_Format %d/%b/%Y:%H:%M:%S %z
 {{- end }}

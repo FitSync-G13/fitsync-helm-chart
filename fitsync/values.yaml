@@ -105,6 +105,7 @@ security:
 # OpenSearch logging configuration
 logging:
   enabled: false  # Will be overridden by pipeline
+  serviceName: "api-gateway"  # Which service to collect logs from
   opensearch:
     endpoint: "opensearch2.dev-api.fitsync.online"
     port: 9200
