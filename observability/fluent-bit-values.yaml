@@ -1,0 +1,70 @@
+## Deploy Fluent Bit in the main cluster with TLS to OpenSearch.
+## Provide secrets:
+## - Secret fluent-bit-opensearch-auth: keys username, password
+## - Secret fluent-bit-opensearch-tls: keys ca.crt, tls.crt, tls.key (omit tls.crt/tls.key if not using mTLS)
+
+serviceAccount:
+  create: true
+
+daemonSet:
+  enabled: true
+
+env:
+  - name: OPENSEARCH_HOST
+    value: opensearch-api.obs.fitsync.online
+  - name: OPENSEARCH_PORT
+    value: "443"
+  - name: OPENSEARCH_USERNAME
+    valueFrom:
+      secretKeyRef:
+        name: fluent-bit-opensearch-auth
+        key: username
+  - name: OPENSEARCH_PASSWORD
+    valueFrom:
+      secretKeyRef:
+        name: fluent-bit-opensearch-auth
+        key: password
+
+inputs:
+  tail:
+    - path: /var/log/containers/*.log
+      parser: docker
+      tag: kube.*
+      memBufLimit: 50MB
+      skipLongLines: On
+      refreshInterval: 10
+
+filters:
+  kubernetes:
+    - match: kube.*
+      mergeLog: On
+      keepLog: Off
+      k8sLoggingParser: On
+
+outputs:
+  es:
+    - match: kube.*
+      host: ${OPENSEARCH_HOST}
+      port: ${OPENSEARCH_PORT}
+      http_user: ${OPENSEARCH_USERNAME}
+      http_passwd: ${OPENSEARCH_PASSWORD}
+      logstash_format: On
+      logstash_prefix: logs-main
+      logstash_dateformat: %Y.%m.%d
+      replace_dots: On
+      tls: On
+      tls.verify: On
+      tls.ca_file: /fluent-bit/tls/ca.crt
+      tls.crt_file: /fluent-bit/tls/tls.crt
+      tls.key_file: /fluent-bit/tls/tls.key
+
+volumeMounts:
+  - name: opensearch-tls
+    mountPath: /fluent-bit/tls
+    readOnly: true
+
+volumes:
+  - name: opensearch-tls
+    secret:
+      secretName: fluent-bit-opensearch-tls
+
